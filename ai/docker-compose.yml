@@ -1,0 +1,33 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_models:/root/.ollama
+    # If you have an NVIDIA GPU and drivers:
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - capabilities: [gpu]
+    # environment:
+    #   - OLLAMA_NUM_GPU=1
+
+  tagger:
+    build: ./tagger
+    container_name: ai-tagger
+    restart: unless-stopped
+    environment:
+      - OLLAMA_URL=http://ollama:11434
+      - MODEL_NAME=llava:13b   
+      - MAX_FRAMES=8
+    depends_on:
+      - ollama
+    ports:
+      - "8000:8000"
+
+volumes:
+  ollama_models:
