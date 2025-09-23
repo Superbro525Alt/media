@@ -15,6 +15,13 @@ services:
     #         - capabilities: [gpu]
     # environment:
     #   - OLLAMA_NUM_GPU=1
+    command: >
+      sh -c "
+      /bin/ollama serve &
+      sleep 5 &&
+      ollama pull llava:13b &&
+      wait
+      "
 
   tagger:
     build: ./tagger
